@@ -27,6 +27,10 @@ conda install -c conda-forge keras
 while read requirement; do conda install --yes $requirement || pip install $requirement; done < requirementsT.txt
 `
 
+## Data
+The test data is freely available and can be downloaded from this link: [data](https://goo.gl/193hqk). In order to edit the 
+configuration file as little as possible, I suggest you to copy the data folder at the root folder of this repository.
+
 ## Run Test
 The organization of the folders is the one below, and its content is self explanatory. 
 The file to run the test is inside the *code* folder and is `MakeSegmentation.py`. To configure the run you **must** edit
