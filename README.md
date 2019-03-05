@@ -4,13 +4,12 @@ segmentation algorithm for the prostate and its peripheral zone (PZ) using a 3D 
 
 The details of our algorithm will soon be published and we will add a link in here. 
 
-In this test case **six** different CNN models can be tested in two sample datasets. The two datasets contain MR images from 
-two different vendors: Siemens and GE. And the models are split in 3 for **prostate** segmentation and 3 for **PZ** segmentation. The
-difference between the models is the training dataset used to build them, and not the CNN architecture. 
+With this program **six** different CNN models can be tested in **two** sample datasets. The two datasets contain MR images from 
+different vendors: Siemens and GE. And the models are split in 3 for **prostate** segmentation and 3 for **PZ** segmentation. The
+difference between the models is the training dataset used to build them, not the CNN architecture. 
 
-This is the architecture used to train our models:
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "CNN model")
-
+The architecture used to train our models is the following:
+![alt text](https://github.com/olmozavala/Prostate_and_PZ_DL_Segmentation_Code/raw/master/images/NN.png "CNN model")
 
 ## Install
 
@@ -43,6 +42,11 @@ python MakeSegmentation.py
 ```
 
 This program will make a segmentation with the proposed CNN and it will create images showing the ground truth contour and the
-predicted contour. It will also compute the Dice Coefficient of the segmentation and it will save it in a CSV file and it will also
-create a bar plot. 
+predicted contour. It will also compute the Dice Coefficient of the segmentation and it will save it in a CSV file.
+Some of the images you should be able to generate with this test case are:
+
+
+Prostate Segmentation | PZ Segmentation
+:---------:|:---------:
+![alt text](https://github.com/olmozavala/Prostate_and_PZ_DL_Segmentation_Code/raw/master/images/ex1.png "Prostate segmentation") | ![alt text](https://github.com/olmozavala/Prostate_and_PZ_DL_Segmentation_Code/raw/master/images/ex2.png "PZ segmentation")
 

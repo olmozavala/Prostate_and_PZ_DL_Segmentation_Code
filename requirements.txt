@@ -1,0 +1,14 @@
+simpleitk=1.1rc2=py36_0
+tensorboard=1.9.0=py36hf484d3e_0
+tensorflow=1.9.0=gpu_py36h02c5d5e_1
+tensorflow-base=1.9.0=gpu_py36h6ecc378_0
+tensorflow-gpu=1.9.0=hf154084_0
+pydicom=1.1.0=py_0
+libopencv=3.4.1=h1a3b859_1
+opencv=3.4.1=py36h6fd60c2_2
+py-opencv=3.4.1=py36h0676e08_1
+plotly=3.2.0a2=py_0
+keras=2.2.2=py36_0
+keras-applications=1.0.4=py_1
+keras-preprocessing=1.0.2=py_1
+
