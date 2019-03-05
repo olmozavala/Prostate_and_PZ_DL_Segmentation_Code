@@ -1,4 +1,4 @@
-# SegmentationofprostateandprostatezonesusingDeepLearning:amulti-MRIvendoranalysis
+# Segmentation of prostate and prostate zones using Deep Learning: a multi-MRI vendor analysis
 This repository contains a test case for one of our recent projects which consist of an automatic
 segmentation algorithm for the prostate and its peripheral zone (PZ) using a 3D Convolutional Neural Network (CNN). 
 
