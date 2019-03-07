@@ -28,7 +28,7 @@ while read requirement; do conda install --yes $requirement || pip install $requ
 `
 
 ## Data
-The test data is freely available and can be downloaded from this link: [data](https://goo.gl/193hqk). In order to edit the 
+The test data is freely available and can be downloaded from this link [data](https://goo.gl/193hqk). In order to edit the 
 configuration file as little as possible, I suggest you to copy the data folder at the root folder of this repository.
 
 ## Run Test
@@ -37,7 +37,7 @@ The file to run the test is inside the *code* folder and is `MakeSegmentation.py
 the file `MainConfig.py` inside *code/config*. The configuration file is well documented and there is not need to re-explain it
 here. Just mention that in that file you can configure your input and output folders, which model to test, in which dataset, etc. 
 
-% Image here
+![alt text](https://github.com/olmozavala/Prostate_and_PZ_DL_Segmentation_Code/raw/master/images/tree.png "Project organization")
 
 To test any of the models, first edit the configuration file and then run it with:
 ```
