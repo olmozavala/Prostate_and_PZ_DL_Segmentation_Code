@@ -37,9 +37,7 @@ The file to run the test is inside the *code* folder and is `MakeSegmentation.py
 the file `MainConfig.py` inside *code/config*. The configuration file is well documented and there is not need to re-explain it
 here. Just mention that in that file you can configure your input and output folders, which model to test, in which dataset, etc. 
 
-<img src="https://github.com/olmozavala/Prostate_and_PZ_DL_Segmentation_Code/raw/master/images/tree.png" alt="Project organization"
-style="width:280px;"/>
-
+<img src="https://github.com/olmozavala/Prostate_and_PZ_DL_Segmentation_Code/raw/master/images/tree.png" width="230"/>
 
 To test any of the models, first edit the configuration file and then run it with:
 ```
