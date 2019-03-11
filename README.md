@@ -13,6 +13,8 @@ The architecture used to train our models is the following:
 
 ## Install
 
+**Important!!** This code uses f-strings, which are available since Python 3.6. If you are using an older version please reformat the `print` statements.
+
 ### Conda 
 
 ```
