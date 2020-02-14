@@ -1,9 +1,5 @@
-import matplotlib.pyplot as plt
-import time
-from os.path import join, isdir
-import pydicom
+from os.path import join
 import numpy as np
-from os import walk, listdir
 import SimpleITK as sitk
 
 def readImgAndProstate(inFolder, current_folder):

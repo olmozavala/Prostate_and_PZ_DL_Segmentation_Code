@@ -1,5 +1,5 @@
-from keras.layers import *
-from keras.models import *
+from tensorflow.keras.layers import *
+from tensorflow.keras.models import *
 
 modelnames = {"3ds":"3D_SingleStream", "3dm":"3D_MultiStream",  "3dmorig":"3D_MultiStreamOriginal", "3ddropout":"3D_UsingDropout" }
 
