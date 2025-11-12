@@ -21,7 +21,7 @@ def getLatestFile(file_names):
 
     return latest_file
 
-def makePrediction(model, roi_ctr_pro, img_size, roi_img1, roi_img2, roi_img3):
+def makePrediction(model, img_size, roi_img1, roi_img2, roi_img3):
         input_array = utils.createInputArray(True, img_size, roi_img1, roi_img2, roi_img3)
         output_NN = model.predict(input_array, verbose=1)
 
@@ -71,7 +71,7 @@ def procSingleCase(inFolder, outputDirectory, outputImages, all_params, current_
     [roi_img1, roi_img2, roi_img3] = readROI(inFolder, current_folder, type_segmentation)
 
     print('Predicting image {} ({})....'.format(current_folder, inFolder))
-    output_NN = makePrediction(model, roi_ctr_pro, img_size, roi_img1, roi_img2, roi_img3)
+    output_NN = makePrediction(model, img_size, roi_img1, roi_img2, roi_img3)
 
     # ************** Binary threshold and largest connected component ******************
     print('Threshold and largest component...')

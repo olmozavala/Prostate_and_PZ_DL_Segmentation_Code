@@ -1,12 +1,17 @@
 from os.path import join
+import os
 
 _test_folder='Siemens' # It can be GE or Siemens
 _test_model='Siemens' # It can be 'GE','Siemens','Siemens_and_GE'
 _type_seg = 'Prostate' # It can be 'Prostate' or 'PZ'
-_root_folder = '../'
-_data_folder= join(_root_folder, _test_folder)
+_root_folder = '/home/olmozavala/Dropbox/MyProjects/UM/Paper_ProstateAndPZ_testcode/'
+_data_folder= join(_root_folder, 'data', _test_folder)
+# Validate path 
+if not os.path.exists(_data_folder):
+    raise FileNotFoundError(f"Data folder not found: {_data_folder}")
+
 #_data_folder= F'/data/UM/ProstateSegdata/{_test_folder}'
-_output_folder = F'{_root_folder}/output/{_test_folder}'
+_output_folder = join(_root_folder, 'output', _test_folder)
 
 def getMakeSegmentationConfig():
     cur_config_multiple = {

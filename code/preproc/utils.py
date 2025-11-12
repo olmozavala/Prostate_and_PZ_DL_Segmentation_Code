@@ -1,3 +1,9 @@
+"""
+Preprocessing utilities for medical image segmentation.
+
+This module provides functions for image resampling, normalization, cropping,
+and other preprocessing operations required for 3D medical image segmentation.
+"""
 import SimpleITK as sitk
 import visualization.utilsviz as utilsviz
 import math
@@ -6,7 +12,8 @@ from os.path import join
 import numpy as np
 import cv2
 from skimage import measure
-from scipy.ndimage.morphology import binary_fill_holes
+from scipy.ndimage import binary_fill_holes
+from typing import List, Tuple, Union, Optional, Any
 
 
 def resampleImage(in_img, new_spacing, interpolator, defaultValue):
@@ -31,10 +38,19 @@ def resampleImage(in_img, new_spacing, interpolator, defaultValue):
 
     ## Compute the resampling
     filter = sitk.ResampleImageFilter()
-
-    # "in_img, out size, tranform?, interpolation, out origin, out space, out direction, pixel type id, "
-    out_img = filter.Execute(in_img, new_size, sitk.Transform(), interpolator, in_img.GetOrigin(),
-                                  new_spacing, in_img.GetDirection(), defaultValue, in_img.GetPixelIDValue())
+    
+    # Set filter properties (modern SimpleITK API)
+    filter.SetSize(new_size)
+    filter.SetTransform(sitk.Transform())
+    filter.SetInterpolator(interpolator)
+    filter.SetOutputOrigin(in_img.GetOrigin())
+    filter.SetOutputSpacing(new_spacing)
+    filter.SetOutputDirection(in_img.GetDirection())
+    filter.SetDefaultPixelValue(defaultValue)
+    filter.SetOutputPixelType(in_img.GetPixelID())
+    
+    # Execute with just the input image
+    out_img = filter.Execute(in_img)
 
     return out_img
 
@@ -506,40 +522,6 @@ def createInputArray( multiplane_array, img_size, *imgs):
         outArray = np.zeros([1, img_size, img_size, img_size, 1], dtype=np.float32)
 
 
-    # START DELETE THIS PART, ONLY TESTING IF IT WORKS FOR DIFFERENT RESOLUTIONS
-    # *********************************************
-    # from scipy.interpolate import RegularGridInterpolator
-    # prev_size = 168
-    # new_size = img_size
-    # slice = 80
-    #
-    # nxs = np.linspace(1, new_size, new_size)
-    # nys = np.linspace(1, new_size, new_size)
-    # nzs = np.linspace(1, new_size, new_size)
-    #
-    # x = np.linspace(1, new_size, prev_size)
-    # y = np.linspace(1, new_size, prev_size)
-    # z = np.linspace(1, new_size, prev_size)
-    #
-    # allpts = np.zeros((new_size * new_size * new_size, 3))
-    # ix = 0
-    # for i, nx in enumerate(nxs):
-    #     for j, ny in enumerate(nys):
-    #         for k, nz in enumerate(nzs):
-    #             allpts[ix, :] = [nx, ny, nz]
-    #             ix += 1
-    #
-    # for ii,img in enumerate(imgs):
-    #     data = sitk.GetArrayFromImage(imgs[ii])
-    #     my_interp_func = RegularGridInterpolator((x, y, z), data)
-    #     new_data_flat = my_interp_func(allpts)
-    #     outArray[ii][0,:,:,:,0] = np.reshape(new_data_flat, (new_size, new_size, new_size))
-    #
-    #     # plt.imshow(new_data[slice, :, :])
-    #     # plt.show()
-    # END DELETE THIS PART, ONLY SEEN IF IT WORKS FOR DIFFERENT RESOLUTIONS
-    # *********************************************
-
     if multiplane_array:
         # transversal image
         outArray[0][0, :, :, :, 0] = sitk.GetArrayFromImage(imgs[0])
@@ -609,23 +591,36 @@ def createFolder(folder):
     if not(os.path.exists(folder)):
         os.makedirs(folder)
 
-def shift3D(A, size, axis):
+def shift3D(A: np.ndarray, size: int, axis: int) -> np.ndarray:
+    """
+    Shifts a 3D array along a specified axis with edge padding.
+    
+    Args:
+        A: Input 3D numpy array
+        size: Shift amount (positive or negative)
+        axis: Axis along which to shift (0, 1, or 2)
+        
+    Returns:
+        Shifted array with edge padding
+    """
     dims = A.shape
-    if axis==0:
+    if axis == 0:
         if size > 0:
-            B = np.lib.pad(A[:dims[1]-size,:,:], ((size, 0), (0, 0), (0,0)), 'edge')
+            B = np.pad(A[:dims[0]-size, :, :], ((size, 0), (0, 0), (0, 0)), 'edge')
         else:
-            B = np.lib.pad(A[-size:, :,:], ((0, -size), (0, 0), (0,0)), 'edge')
-    if axis==1:
+            B = np.pad(A[-size:, :, :], ((0, -size), (0, 0), (0, 0)), 'edge')
+    elif axis == 1:
         if size > 0:
-            B = np.lib.pad(A[:,:dims[1]-size, :], ((0, 0), (size, 0), (0,0)), 'edge')
+            B = np.pad(A[:, :dims[1]-size, :], ((0, 0), (size, 0), (0, 0)), 'edge')
         else:
-            B = np.lib.pad(A[:,-size:, :], ((0, 0), (0, -size), (0,0)), 'edge')
-    if axis==2:
+            B = np.pad(A[:, -size:, :], ((0, 0), (0, -size), (0, 0)), 'edge')
+    elif axis == 2:
         if size > 0:
-            B = np.lib.pad(A[:,:,:dims[1]-size], ((0, 0), (0,0), (size, 0)), 'edge')
+            B = np.pad(A[:, :, :dims[2]-size], ((0, 0), (0, 0), (size, 0)), 'edge')
         else:
-            B = np.lib.pad(A[:,:,-size: ], ((0, 0), (0,0), (0, -size)), 'edge')
+            B = np.pad(A[:, :, -size:], ((0, 0), (0, 0), (0, -size)), 'edge')
+    else:
+        raise ValueError(f"Invalid axis: {axis}. Must be 0, 1, or 2.")
     return B
 
 def makeSphere(size, r):

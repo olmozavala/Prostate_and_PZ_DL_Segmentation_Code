@@ -1,11 +1,17 @@
+"""
+Visualization utilities for medical image segmentation.
+
+This module provides functions for visualizing 3D medical images, contours,
+and segmentation results using matplotlib.
+"""
 import SimpleITK as sitk
-import pylab
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import os
 from os.path import join
 from os import listdir
 import numpy as np
-import scipy.misc as misc
+from typing import List, Dict, Optional, Union, Tuple
 
 colors = ['y', 'r', 'c', 'b', 'g', 'w', 'k', 'y', 'r', 'c', 'b', 'g', 'w', 'k']
 
@@ -160,21 +166,25 @@ def drawMultipleSlices(itk_imgs, slices=['middle'], title='', contours=[], savef
 
                 if colorbar:
                     plt.colorbar(imres,ax=curax)
+                
+                # Store legend handles for matplotlib 3.8+ compatibility
+                legend_handles = []
                 if len(contours) > 0:
                     for idx, cc in enumerate(contours):
                         CS = curax.contour(getProperPlane(cc,plane,slice), colors=colors[idx%len(colors)], linewidths=.4)
                         if len(labels) > 0:
                             curax.clabel(CS, inline=1, fontsize=0)
-                            CS.collections[0].set_label(labels[idx])
+                            # Create a proxy artist for the legend (compatible with all matplotlib versions)
+                            legend_handles.append(Line2D([0], [0], color=colors[idx%len(colors)], linewidth=2, label=labels[idx]))
 
                     if len(labels) > 0:
-                        curax.legend(loc='upper right', framealpha=1, prop={'size':15})
+                        curax.legend(handles=legend_handles, loc='upper right', framealpha=1, prop={'size':15})
 
             if title != '': # Only draws a title if is received
                 fig.suptitle(title, fontsize=20)
 
             if savefig != '':
-                pylab.savefig('{}_{num:03d}.png'.format(savefig,num=slice), bbox_inches='tight')
+                plt.savefig('{}_{num:03d}.png'.format(savefig,num=slice), bbox_inches='tight')
 
             dispImages()
 
@@ -195,20 +205,23 @@ def drawSlicesNumpy(numpy_img, slices, title, ctrs, savefig, labels, imgsize, pl
         if draw_slice:
             plt.imshow(numpy_img[slice,:,:], cmap='gray')
 
+            # Store legend handles for matplotlib 3.8+ compatibility
+            legend_handles = []
             if len(ctrs) > 0:
                 for idx, cc in enumerate(ctrs):
                     CS = plt.contour(cc[slice, :, :], colors=colors[idx], linewidths=.4)
                     if len(labels) > 0:
                         plt.clabel(CS, inline=1, fontsize=0)
-                        CS.collections[0].set_label(labels[idx])
+                        # Create a proxy artist for the legend (compatible with all matplotlib versions)
+                        legend_handles.append(Line2D([0], [0], color=colors[idx], linewidth=2, label=labels[idx]))
 
                 if len(labels) > 0:
-                    plt.legend(loc='upper right', framealpha=1, prop={'size':12})
+                    plt.legend(handles=legend_handles, loc='upper right', framealpha=1, prop={'size':12})
 
             plt.title('{} {} slice:{}'.format(title, imgsize, slice))
             plt.axis('off')
             if savefig != '':
-                pylab.savefig('{}_{num:03d}.png'.format(savefig,num=slice),bbox_inches='tight')
+                plt.savefig('{}_{num:03d}.png'.format(savefig,num=slice),bbox_inches='tight')
 
             dispImages()
 
@@ -245,7 +258,7 @@ def plotMultipleHistograms(all_hist, labels, save_file='', start_at = 0, width=4
         plt.legend(loc='best')
 
         if save_file != '':
-            pylab.savefig(save_file,bbox_inches='tight')
+            plt.savefig(save_file,bbox_inches='tight')
 
         dispImages()
 

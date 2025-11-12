@@ -1,8 +1,20 @@
-simpleitk=1.1rc2=py36_0
-tensorflow=1.9.0=gpu_py36h02c5d5e_1
-tensorflow-base=1.9.0=gpu_py36h6ecc378_0
-tensorflow-gpu=1.9.0=hf154084_0
-keras=2.2.2=py36_0
-keras-applications=1.0.4=py_1
-keras-preprocessing=1.0.2=py_1
+# Deep Learning
+tensorflow>=2.15.0,<3.0.0
 
+# Medical Imaging
+simpleitk>=2.3.0
+
+# Data Processing
+numpy>=1.24.0,<2.0.0
+pandas>=2.0.0
+
+# Visualization
+matplotlib>=3.7.0,<4.0.0
+scipy>=1.10.0,<2.0.0
+
+# Computer Vision
+opencv-python>=4.8.0,<5.0.0
+
+# Image Processing
+Pillow>=10.0.0
+scikit-image>=0.21.0
