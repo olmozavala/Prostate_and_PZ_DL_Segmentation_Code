@@ -1,8 +1,18 @@
-# Prostate and Peripheral Zone Segmentation
+# Segmentation of prostate and prostate zones using Deep Learning: a multi-MRI vendor analysis
 
-A deep learning pipeline for 3D segmentation of prostate and peripheral zone (PZ) from multi-planar MRI images using a 3D U-Net architecture.
+This repository contains a test case for one of our recent projects which consist of an automatic
+segmentation algorithm for the prostate and its peripheral zone (PZ) using a 3D Convolutional Neural Network (CNN). 
+
+The details of our algorithm will soon be published and we will add a link in here. 
+
+With this program **six** different CNN models can be tested in **two** sample datasets. The two datasets contain MR images from 
+different vendors: Siemens and GE. And the models are split in 3 for **prostate** segmentation and 3 for **PZ** segmentation. The
+difference between the models is the training dataset used to build them, not the CNN architecture. 
 
 ## Overview
+
+The architecture used to train our models is the following:
+![CNN Architecture](images/NN.png "CNN model")
 
 This project implements a multi-stream 3D U-Net that takes three orthogonal views (transversal, sagittal, coronal) as input and produces binary segmentation masks. The architecture is designed to leverage multi-planar information for improved segmentation accuracy.
 
@@ -12,6 +22,7 @@ This project implements a multi-stream 3D U-Net that takes three orthogonal view
 - **Automatic preprocessing**: Handles image resampling, normalization, and ROI extraction
 - **Flexible inference**: Supports both evaluation (with ground truth) and inference (new cases)
 - **Comprehensive visualization**: Generates visualization images and metrics
+- **Multi-vendor support**: Tested on Siemens and GE MRI scanners
 
 ## Requirements
 
@@ -20,11 +31,13 @@ This project implements a multi-stream 3D U-Net that takes three orthogonal view
 This project uses `uv` for environment management. Create and activate the environment:
 
 ```bash
-# Create environment
-uv venv /home/olmozavala/uv/envs/aitensorboard
+# Create environment in the project folder
+uv venv .venv
 
 # Activate environment
-source /home/olmozavala/uv/envs/aitensorboard/bin/activate
+source .venv/bin/activate  # On Linux/Mac
+# or
+.venv\Scripts\activate  # On Windows
 
 # Install dependencies
 uv pip install -r requirements.txt
@@ -32,16 +45,24 @@ uv pip install -r requirements.txt
 
 ### Dependencies
 
-- **TensorFlow** >= 2.15.0: Deep learning framework
+- **TensorFlow** >= 2.15.0, < 3.0.0: Deep learning framework
 - **SimpleITK** >= 2.3.0: Medical image processing
 - **NumPy** >= 1.24.0, < 2.0.0: Numerical computing
 - **Pandas** >= 2.0.0: Data manipulation
-- **Matplotlib** >= 3.7.0: Visualization
-- **SciPy** >= 1.10.0: Scientific computing
-- **OpenCV** >= 4.8.0: Computer vision operations
-- **scikit-image**: Image processing utilities
+- **Matplotlib** >= 3.7.0, < 4.0.0: Visualization
+- **SciPy** >= 1.10.0, < 2.0.0: Scientific computing
+- **OpenCV** >= 4.8.0, < 5.0.0: Computer vision operations
+- **scikit-image** >= 0.21.0: Image processing utilities
+- **Pillow** >= 10.0.0: Image processing
+
+## Data
+
+The test data is freely available and can be downloaded from this link [data](https://goo.gl/193hqk). In order to edit the 
+configuration file as little as possible, I suggest you to copy the data folder at the root folder of this repository.
 
 ## Project Structure
+
+The organization of the folders is the one below, and its content is self explanatory. 
 
 ```
 code/
@@ -64,11 +85,25 @@ code/
 
 ### 1. Evaluation Mode (with Ground Truth)
 
-Use `MakeSegmentation.py` to evaluate the model on cases with ground truth data:
+The file to run the test is inside the *code* folder and is `MakeSegmentation.py`. To configure the run you **must** edit
+the file `MainConfig.py` inside *code/config*. The configuration file is well documented and there is not need to re-explain it
+here. Just mention that in that file you can configure your input and output folders, which model to test, in which dataset, etc. 
+
+To test any of the models, first edit the configuration file and then run it with:
 
 ```bash
-uv run --python /home/olmozavala/uv/envs/aitensorboard/bin/python code/MakeSegmentation.py
+cd code
+python MakeSegmentation.py
 ```
+
+Or using uv with the local environment:
+
+```bash
+uv run --python .venv/bin/python code/MakeSegmentation.py
+```
+
+This program will make a segmentation with the proposed CNN and it will create images showing the ground truth contour and the
+predicted contour. It will also compute the Dice Coefficient of the segmentation and it will save it in a CSV file.
 
 This script:
 - Reads preprocessed ROI images
@@ -81,7 +116,13 @@ This script:
 Use `OnlyInferenceSegmentation.py` to segment new cases without ground truth:
 
 ```bash
-uv run --python /home/olmozavala/uv/envs/aitensorboard/bin/python code/OnlyInferenceSegmentation.py
+uv run --python .venv/bin/python code/OnlyInferenceSegmentation.py
+```
+
+Or if the environment is activated:
+
+```bash
+python code/OnlyInferenceSegmentation.py
 ```
 
 Before running, configure the parameters in the `__main__` section:
@@ -100,6 +141,14 @@ model_weights_file = join(root_folder, 'models', 'Prostate', 'Siemens.hdf5')
 model_name = '3dm'  # '3dm' or '3ddropout'
 type_segmentation = 'Prostate'  # 'Prostate' or 'PZ'
 ```
+
+## Example Results
+
+Some of the images you should be able to generate with this test case are:
+
+Prostate Segmentation | PZ Segmentation
+:---------:|:---------:
+![Prostate Segmentation Example](images/ex1.png "Prostate segmentation") | ![PZ Segmentation Example](images/ex2.png "PZ segmentation")
 
 ## Input Data Format
 
